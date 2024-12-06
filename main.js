@@ -37,19 +37,19 @@
     async function loginAndCheckIn(email, password) {
         console.log(`\nAttempting login for email: ${email}`);
         const signInPayload = { email, password };
-        const signIn = await coday("https://apix.securitylabs.xyz/v1/auth/signin-user", 'POST', signInPayload);
-        
+        const signIn = await coday("https://node.securitylabs.xyz/api/v1/auth/signin-user", 'POST', signInPayload);
+
         if (signIn && signIn.accessToken) {
             const headers = { ...headersTemplate, 'Authorization': `Bearer ${signIn.accessToken}` };
             console.log(chalk.green('Login succeeded! Fetching user details...'));
 
-            const user = await coday("https://apix.securitylabs.xyz/v1/users", 'GET', null, headers);
+            const user = await coday("https://node.securitylabs.xyz/api/v1/users", 'GET', null, headers);
             const { id, dipTokenBalance } = user || {};
             if (id) {
                 console.log(`User id: ${id} | Current points: ${dipTokenBalance}`);
 
                 console.log("Attempting daily check-in...");
-                const checkin = await coday(`https://apix.securitylabs.xyz/v1/users/earn/${id}`, 'GET', null, headers);
+                const checkin = await coday(`https://node.securitylabs.xyz/api/v1/users/earn/${id}`, 'GET', null, headers);
                 if (checkin && checkin.tokensToAward) {
                     console.log(chalk.green(`Check-in successful! Awarded points: ${checkin.tokensToAward}`));
                 } else {
